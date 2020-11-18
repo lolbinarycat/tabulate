@@ -4,21 +4,23 @@ module Text.Tabulate where
 
 import Data.List (intercalate,transpose)
 
+import Text.Tabulate.Internal
+
 data Format = ColSep String | BoxDraw {
   horiz_vert :: Char,
   horiz_line :: Char,
   vert_line :: Char,
-  down_left :: Char,
-  down_right :: Char,
   up_left :: Char,
   up_right :: Char,
+  down_left :: Char,
+  down_right :: Char,
   horiz_up :: Char,
-  horiz_down :: Char,
+  horiz_down :: Char
+  vert_left :: Char,
   vert_right :: Char,
-  vert_left :: Char
 }
   
-defaultBoxDrawFmt = BoxDraw {
+lightBoxDrawFmt = BoxDraw {
   horiz_vert = '┼',
   horiz_line = '─',
   vert_line = '│',
@@ -33,7 +35,6 @@ defaultBoxDrawFmt = BoxDraw {
 }
 
 simpleFmt = ColSep " "
-
 
 tabulate :: Format -> [[String]] -> String
 tabulate (ColSep sep) cells =
@@ -60,14 +61,3 @@ tabulate BoxDraw{..} cells = unlines $ map concat $ addVBorder $ addHBorder $ pa
 
   hBord = map (map (const horiz_line))
 
-getSizes :: [[[a]]] -> [Int]
-getSizes = map (maximum . map length) . transpose
-
-padCells :: [[String]] -> [[String]]
-padCells cs = transpose pcs where
-  pcs = [ map (padTo n) row | (n,row) <- zip sizes tcs ]
-  sizes = map (foldr (max . length) 0) tcs
-  tcs = transpose cs
-
-padTo :: Int -> String -> String
-padTo n s = take (n-length s) (repeat ' ')++s
