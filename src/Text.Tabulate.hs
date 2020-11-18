@@ -1,6 +1,8 @@
+{-# LANGUAGE RecordWildCards #-}
+
 module Text.Tabulate where
 
-import Data.List
+import Data.List (intercalate,transpose)
 
 data Format = ColSep String | BoxDraw {
   horiz_vert :: Char,
