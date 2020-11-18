@@ -6,7 +6,11 @@ import Data.List (intercalate,transpose)
 
 import Text.Tabulate.Internal
 
-data Format = ColSep String | BoxDraw {
+data Format =
+  -- | very simple format, this string is put between each cell after padding.
+  ColSep String |
+  -- | complex format intended for use with the unicode box drawing charachters, although it can be used for other charachters.
+  BoxDraw {
   horiz_vert :: Char,
   horiz_line :: Char,
   vert_line :: Char,
@@ -19,7 +23,8 @@ data Format = ColSep String | BoxDraw {
   vert_left :: Char,
   vert_right :: Char,
 }
-  
+
+-- | format using the "light" box drawing charachters
 lightBoxDrawFmt = BoxDraw {
   horiz_vert = '┼',
   horiz_line = '─',
@@ -34,8 +39,10 @@ lightBoxDrawFmt = BoxDraw {
   horiz_down = '┬'
 }
 
+-- | the simplest format, seperate cells with a space.
 simpleFmt = ColSep " "
 
+-- | pad and format the given table of strings.
 tabulate :: Format -> [[String]] -> String
 tabulate (ColSep sep) cells =
   unlines $ map (intercalate sep) $ padCells cells
